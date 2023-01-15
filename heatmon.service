@@ -1,0 +1,11 @@
+[Unit]
+Description=heatmon
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/jz/heatmon/heatmon.py
+Restart=always
+User=jz
+
+[Install]
+WantedBy=multi-user.target
