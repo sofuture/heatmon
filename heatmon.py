@@ -22,11 +22,12 @@ if __name__ == "__main__":
   while True:
     print("checking temps")
     for id, sensor_id in therms.items():
-        try:
-            sensors[id] = W1ThermSensor(sensor_type=Sensor.DS18B20, sensor_id=id)
-        except NoSensorFoundError:
-            print("unable to initialize sensor:{}:{}".format(id, sensor_id))
-            continue
+        if id not in sensors:
+            try:
+                sensors[id] = W1ThermSensor(sensor_type=Sensor.DS18B20, sensor_id=id)
+            except NoSensorFoundError:
+                print("unable to initialize sensor:{}:{}".format(id, sensor_id))
+                continue
 
         sensor = sensors[id]
         try:
