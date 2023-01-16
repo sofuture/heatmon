@@ -6,8 +6,8 @@ from prometheus_client import Gauge
 
 g = Gauge("heatmon_temperature_c", "sensor temperature", ["sensor"])
 therms = {
-    "031397941c75": "office_out",
-    "030397942af7": "office_return",
+    "031397941c75": "office_return",
+    "030397942af7": "office_out",
     "030594970240": "upstairs_return",
     "030697940cde": "upstairs_out",
     "0305949769c1": "main_return",
