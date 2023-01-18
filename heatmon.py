@@ -1,4 +1,6 @@
 import time
+import os
+import RPi.GPIO as GPIO
 from w1thermsensor import W1ThermSensor, Sensor
 from w1thermsensor.errors import SensorNotReadyError, NoSensorFoundError
 from prometheus_client import start_http_server
@@ -20,7 +22,16 @@ if __name__ == "__main__":
   sensors = {}
 
   while True:
-    print("checking temps")
+
+    if (os.path.isdir("/sys/bus/w1/devices/28-{}".format(list(therms.keys())[0])) == False):
+        print("resetting gpio")
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(17, GPIO.OUT)
+        GPIO.output(17, GPIO.LOW)
+        time.sleep(3)
+        GPIO.output(17, GPIO.HIGH)
+        time.sleep(5)
+
     for id, sensor_id in therms.items():
         if id not in sensors:
             try:
