@@ -33,20 +33,20 @@ if __name__ == "__main__":
         time.sleep(5)
 
     for id, sensor_id in therms.items():
-        if id not in sensors:
-            try:
-                sensors[id] = W1ThermSensor(sensor_type=Sensor.DS18B20, sensor_id=id)
-            except NoSensorFoundError:
-                print("unable to initialize sensor:{}:{}".format(id, sensor_id))
-                continue
-
-        sensor = sensors[id]
+        sensor = None
         try:
-            temp = sensor.get_temperature()
-            g.labels(sensor=sensor_id).set(temp)
-            print("sensor:{}:{} temp:{}".format(id,sensor_id,temp))
-        except SensorNotReadyError:
-            print("failed to get temp for sensor:{}:{}".format(id, sensor_id))
+            sensor = W1ThermSensor(sensor_type=Sensor.DS18B20, sensor_id=id)
+        except NoSensorFoundError:
+            print("unable to initialize sensor:{}:{}".format(id, sensor_id))
+            continue
+
+        if sensor is not None:
+            try:
+                temp = sensor.get_temperature()
+                g.labels(sensor=sensor_id).set(temp)
+                print("sensor:{}:{} temp:{}".format(id,sensor_id,temp))
+            except SensorNotReadyError:
+                print("failed to get temp for sensor:{}:{}".format(id, sensor_id))
     time.sleep(5)
 
 
