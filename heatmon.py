@@ -16,6 +16,16 @@ therms = {
     "031397945533": "main_out",
 }
 
+def reset_gpio():
+    print("resetting gpio")
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(17, GPIO.OUT)
+    GPIO.output(17, GPIO.LOW)
+    time.sleep(3)
+    GPIO.output(17, GPIO.HIGH)
+    time.sleep(5)
+
+
 if __name__ == "__main__":
   start_http_server(8000)
   print("Prometheus metrics available on port 8000 /metrics")
@@ -23,16 +33,11 @@ if __name__ == "__main__":
 
   while True:
 
-    if (os.path.isdir("/sys/bus/w1/devices/28-{}".format(list(therms.keys())[0])) == False):
-        print("resetting gpio")
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(17, GPIO.OUT)
-        GPIO.output(17, GPIO.LOW)
-        time.sleep(3)
-        GPIO.output(17, GPIO.HIGH)
-        time.sleep(5)
-
     for id, sensor_id in therms.items():
+        if (os.path.isdir("/sys/bus/w1/devices/28-{}".format(id)) == False):
+            print("sensor:{} missing".format(id))
+            reset_gpio()
+
         sensor = None
         try:
             sensor = W1ThermSensor(sensor_type=Sensor.DS18B20, sensor_id=id)
